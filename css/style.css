@@ -2110,6 +2110,7 @@ pre code {
   padding: 0;
 }
 .highlight {
+  color: #fff;
   font-family: "Menlo", monospace;
   background: #3b3b3b;
   -webkit-border-radius: 4px;
