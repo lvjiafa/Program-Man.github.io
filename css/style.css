@@ -1056,7 +1056,7 @@ article header .postdate {
 }
 article .content h2:before {
   content: "#";
-  color: #5bac4a;
+  color: #fff;
   position: absolute;
   left: -1rem;
   top: -4px;
