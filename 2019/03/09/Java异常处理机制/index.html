@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="java异常处理机制首先什么是异常，就是程序运行过程运行中可能出现的错误，通常来说分为两种。一种为比较严重的异常–Error，通常我们程序中不做解决，因为其异常通常为内存溢出、编辑器出现错误等问题，另一种是–Exception，通常发生在程序的编译运行过程中，需要我们去解决。运行时出现的错误主要在Exception的子类RuntimeException类及其子类下，其余Exception的子类大都">
+<meta name="keywords" content="Jeffry">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java异常处理机制">
+<meta property="og:url" content="http://yoursite.com/2019/03/09/Java异常处理机制/index.html">
+<meta property="og:site_name" content="Jeffry的博客">
+<meta property="og:description" content="java异常处理机制首先什么是异常，就是程序运行过程运行中可能出现的错误，通常来说分为两种。一种为比较严重的异常–Error，通常我们程序中不做解决，因为其异常通常为内存溢出、编辑器出现错误等问题，另一种是–Exception，通常发生在程序的编译运行过程中，需要我们去解决。运行时出现的错误主要在Exception的子类RuntimeException类及其子类下，其余Exception的子类大都">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-09T05:27:30.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java异常处理机制">
+<meta name="twitter:description" content="java异常处理机制首先什么是异常，就是程序运行过程运行中可能出现的错误，通常来说分为两种。一种为比较严重的异常–Error，通常我们程序中不做解决，因为其异常通常为内存溢出、编辑器出现错误等问题，另一种是–Exception，通常发生在程序的编译运行过程中，需要我们去解决。运行时出现的错误主要在Exception的子类RuntimeException类及其子类下，其余Exception的子类大都">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Java异常处理机制</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">Jeffry的博客</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="http://www.jeffry.top">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2019/02/28/hexo常见命令/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2019/03/09/Java异常处理机制/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2019/03/09/Java异常处理机制/&text=Java异常处理机制"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2019/03/09/Java异常处理机制/&is_video=false&description=Java异常处理机制"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java异常处理机制&body=Check out this article: http://yoursite.com/2019/03/09/Java异常处理机制/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2019/03/09/Java异常处理机制/&name=Java异常处理机制&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#java异常处理机制"><span class="toc-number">1.</span> <span class="toc-text">java异常处理机制</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Java异常处理机制
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">Jeffry的博客</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2019-03-09T05:26:57.000Z" itemprop="datePublished">2019-03-09</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="java异常处理机制"><a href="#java异常处理机制" class="headerlink" title="java异常处理机制"></a>java异常处理机制</h1><p>首先什么是异常，就是程序运行过程运行中可能出现的错误，通常来说分为两种。一种为比较严重的异常–Error，通常我们程序中不做解决，因为其异常通常为内存溢出、编辑器出现错误等问题，另一种是–Exception，通常发生在程序的编译运行过程中，需要我们去解决。运行时出现的错误主要在Exception的子类RuntimeException类及其子类下，其余Exception的子类大都为编译期间出现的错误。在Java的API中，异常处理的类在lang包下，其类的关系大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Throwable</span><br><span class="line">|——Error</span><br><span class="line">|  |——AnnotationFormatError</span><br><span class="line">|  |——AssertionError</span><br><span class="line">|  |——AWTError</span><br><span class="line">|  |——...</span><br><span class="line">|——Exception</span><br><span class="line">|  |——RuntimeException</span><br><span class="line">|     |——...</span><br><span class="line">|  |——...</span><br><span class="line">|     |——...</span><br><span class="line">|</span><br></pre></td></tr></table></figure></p>
+<p>首先如果我们不对出现错误的程序代码进行异常处理的话，JVM（Java虚拟机）默认处理是在控制台输出错误信息，再将程序停止。例如下面代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Demo01 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int a=1;</span><br><span class="line">        int b=0;</span><br><span class="line">        System.out.println(a / b);</span><br><span class="line">        System.out.println(&quot;hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于第五行代码”System.out.println(a / b);“出现ArithmeticException异常，导致程序停止后面代码无法执行。所以我们需要对异常的代码进行处理保证程序能正常进行。通常来说处理异常的方式有两种，一种是采用try…catch…finlly…语句，另一种是throws抛出异常。</p>
+<ul>
+<li>try…catch…finlly…<br>其基本格式为<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    可能出现问题的代码；</span><br><span class="line">&#125;catch（异常名 变量名）&#123;</span><br><span class="line">    针对问题的处理；</span><br><span class="line">&#125;finally&#123;</span><br><span class="line">    资源的释放；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>其中的异常名为Throwable的子类及其子类名。<br>当然其后面的finally有时也可以不加，写成下面格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    可能出现问题的代码；</span><br><span class="line">&#125;catch（异常名 变量名）&#123;</span><br><span class="line">    针对问题的处理；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此上述代码可写成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Demo01 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int a=1;</span><br><span class="line">        int b=0;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(a / b);</span><br><span class="line">        &#125;catch (ArithmeticException e)&#123;</span><br><span class="line">            System.out.println(&quot;除数不能为零&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>后面的”System.out.println(“hello”);“便可以执行。这里需要注意的是，try里面的代码是越少越好的，因为代码进入try…catch…就需要走异常处理机制，JVM需要分配资源管理，导致程序运行变慢。<br>当代码出现多种异常的时候呢，例如下面的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Demo01 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int a=1;</span><br><span class="line">        int b=0;</span><br><span class="line">        System.out.println(a / b);</span><br><span class="line">        int[] arr = &#123;1, 2, 3&#125;;</span><br><span class="line">        System.out.println(arr[3]);</span><br><span class="line">        System.out.println(&quot;hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中在第5行中出现ArithmeticException异常和第7行中出现ArrayIndexOutOfBoundsException异常，当然我们采用多个try…catch…进行解决，不过我们通常采用使用多个catch…的方式，其格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    可能出现问题的代码；</span><br><span class="line">&#125;catch（异常名1 变量名）&#123;</span><br><span class="line">    针对问题的处理；</span><br><span class="line">&#125;catch（异常名2 变量名）&#123;</span><br><span class="line">    针对问题的处理；</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure></p>
+<p>因此上述代码可这样写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class Demo01 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int a=1;</span><br><span class="line">        int b=0;</span><br><span class="line">        int[] arr = &#123;1, 2, 3&#125;;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(a / b);</span><br><span class="line">            System.out.println(arr[3]);</span><br><span class="line">        &#125; catch (ArithmeticException e) &#123;</span><br><span class="line">            System.out.println(&quot;除数不能为零&quot;);</span><br><span class="line">        &#125; catch (ArrayIndexOutOfBoundsException e) &#123;</span><br><span class="line">            System.out.println(&quot;数组越界&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是当catch捕获到异常后面的catch将不再执行。<br>关于catch里面的的异常名有几个需要注意的是，<br>一、异常名尽量具体到哪个子类<br>二、当不知会出现什么异常，可以用Exception捕获<br>三、出现父子关系的，父类应该放在后面。原因很简单当catch捕获到异常后面的catch将不再执行。<br>在JDK7后可以采用下面的语法对多个异常进行捕获<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    可能出现问题的代码；</span><br><span class="line">&#125;catch（异常名1 | 异常名2 | 异常名3 | ... 变量名）&#123;</span><br><span class="line">    针对问题的处理；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此上述代码可以写成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Demo01 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        int a=1;</span><br><span class="line">        int b=0;</span><br><span class="line">        int[] arr = &#123;1, 2, 3&#125;;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(a / b);</span><br><span class="line">            System.out.println(arr[3]);</span><br><span class="line">        &#125; catch (ArithmeticException | ArrayIndexOutOfBoundsException e) &#123;</span><br><span class="line">            System.out.println(&quot;程序出现异常&quot;);</span><br><span class="line">        &#125; </span><br><span class="line">        System.out.println(&quot;hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是上述的异常名必须为平级关系，不然没有意义。</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="http://www.jeffry.top">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#java异常处理机制"><span class="toc-number">1.</span> <span class="toc-text">java异常处理机制</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2019/03/09/Java异常处理机制/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2019/03/09/Java异常处理机制/&text=Java异常处理机制"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2019/03/09/Java异常处理机制/&is_video=false&description=Java异常处理机制"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java异常处理机制&body=Check out this article: http://yoursite.com/2019/03/09/Java异常处理机制/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2019/03/09/Java异常处理机制/&title=Java异常处理机制"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2019/03/09/Java异常处理机制/&name=Java异常处理机制&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 Jeffry
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="http://www.jeffry.top">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
